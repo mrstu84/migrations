@@ -233,10 +233,15 @@ class MigrationShell extends AppShell {
 			$this->params['dry'] = false;
 		}
 
+		if (!isset($this->params['force'])) {
+			$this->params['force'] = false;
+		}
+
 		$options = array(
 			'precheck' => isset($this->params['precheck']) ? $this->params['precheck'] : null,
 			'type' => $this->type,
 			'dry' => $this->params['dry'],
+			'force' => $this->params['force'],
 			'callback' => &$this);
 
 		$once = false; //In case of exception run shell again (all, reset, migration number)
@@ -261,7 +266,8 @@ class MigrationShell extends AppShell {
 		$options += array(
 			'type' => $this->type,
 			'callback' => &$this,
-			'dry' => $this->params['dry']
+			'dry' => $this->params['dry'],
+			'force' => $this->params['force']
 		);
 
 		if ($options['dry']) {
@@ -299,7 +305,11 @@ class MigrationShell extends AppShell {
 
 			$this->hr();
 
-			$response = $this->in(__d('migrations', 'Do you want to mark the migration as successful?. [y]es or [a]bort.'), array('y', 'a'));
+			if (! isset($options['force']) || $options['force'] === false) {
+				$response = $this->in(__d('migrations', 'Do you want to mark the migration as successful?. [y]es or [a]bort.'), array('y', 'a'));
+			} else {
+				$response = 'y';
+			}
 
 			if (strtolower($response) === 'y') {
 				$this->Version->setVersion($e->Migration->info['version'], $this->type, $options['direction'] === 'up');
