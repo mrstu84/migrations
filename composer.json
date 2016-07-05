@@ -1,5 +1,5 @@
 {
-	"name": "cakedc/migrations",
+	"name": "mrstu84/migrations",
 	"description": "Migrations Plugin for CakePHP",
 	"type": "cakephp-plugin",
 	"keywords": ["cakephp","migrations"],
